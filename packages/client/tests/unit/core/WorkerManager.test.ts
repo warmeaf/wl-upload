@@ -3,23 +3,12 @@ import mitt from "mitt";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { setWorkerFactory } from "../../../src/core/WorkerManager";
 import type {
-  AllChunksHashedEvent,
   ChunkHashedEvent,
+  EventMap,
   FileHashedEvent,
   QueueAbortedEvent,
-  QueueDrainedEvent,
-  UploadEvents,
 } from "../../../src/types/events";
 import { createFileHasher } from "../../../src/utils/hash";
-
-// Event map type for mitt
-type EventMap = {
-  chunkHashed: ChunkHashedEvent;
-  allChunksHashed: AllChunksHashedEvent;
-  fileHashed: FileHashedEvent;
-  queueAborted: QueueAbortedEvent;
-  queueDrained: QueueDrainedEvent;
-};
 
 // Worker message types (matching WorkerManager types)
 interface WorkerMessage {
@@ -84,8 +73,8 @@ describe("WorkerManager", () => {
   let chunks: ArrayBuffer[];
 
   // Helper to convert emitter type for WorkerManager
-  const getEmitterForWorkerManager = (): Emitter<Record<string, UploadEvents>> => {
-    return emitter as unknown as Emitter<Record<string, UploadEvents>>;
+  const getEmitterForWorkerManager = (): Emitter<EventMap> => {
+    return emitter;
   };
 
   beforeEach(() => {

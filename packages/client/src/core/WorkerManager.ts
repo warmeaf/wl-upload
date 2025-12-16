@@ -7,9 +7,9 @@ import type { Emitter } from "mitt";
 import type {
   AllChunksHashedEvent,
   ChunkHashedEvent,
+  EventMap,
   FileHashedEvent,
   QueueAbortedEvent,
-  UploadEvents,
 } from "../types/events";
 import { createFileHasher } from "../utils/hash";
 
@@ -38,7 +38,7 @@ export interface WorkerManagerConfig {
   /** 是否启用多线程，默认 true */
   enableMultiThreading?: boolean;
   /** 事件发射器 */
-  emitter: Emitter<Record<string, UploadEvents>>;
+  emitter: Emitter<EventMap>;
 }
 
 /**

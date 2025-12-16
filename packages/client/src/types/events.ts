@@ -49,3 +49,14 @@ export type UploadEvents =
   | FileHashedEvent
   | QueueDrainedEvent
   | QueueAbortedEvent;
+
+/**
+ * 事件映射类型，用于 mitt Emitter
+ */
+export type EventMap = {
+  chunkHashed: ChunkHashedEvent;
+  allChunksHashed: AllChunksHashedEvent;
+  fileHashed: FileHashedEvent;
+  queueAborted: QueueAbortedEvent;
+  queueDrained: QueueDrainedEvent;
+};

@@ -1,4 +1,5 @@
 import { resolve } from "node:path";
+import dts from "unplugin-dts/vite";
 import { defineConfig } from "vite";
 
 export default defineConfig({
@@ -9,9 +10,11 @@ export default defineConfig({
       fileName: "index",
       formats: ["es"],
     },
-    rollupOptions: {
-      // shared 包通常不需要 external，因为它会被其他包使用
-    },
     sourcemap: true,
   },
+  plugins: [
+    dts({
+      tsconfigPath: "./tsconfig.json",
+    }),
+  ],
 });

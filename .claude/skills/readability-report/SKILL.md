@@ -38,3 +38,4 @@ license: Complete terms in LICENSE.txt
 
 5. **完成**
    - 最终报告文件位于：`.readability/readability-report.html`
+   - 如果`.claude/skills/readability-report/template/readability-report-template.html`中有更改则还原

@@ -20,11 +20,11 @@
         "children": {
           "api.ts": {
             "type": "file",
-            "readability": 97
+            "readability": 98
           },
           "common.ts": {
             "type": "file",
-            "readability": 97
+            "readability": 98
           },
           "index.ts": {
             "type": "file",

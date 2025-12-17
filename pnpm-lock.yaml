@@ -69,6 +69,9 @@ importers:
 
   packages/server:
     dependencies:
+      '@hono/node-server':
+        specifier: ^1.19.7
+        version: 1.19.7(hono@4.11.1)
       '@wl-upload/shared':
         specifier: workspace:*
         version: link:../shared
@@ -411,6 +414,12 @@ packages:
     engines: {node: '>=18'}
     cpu: [x64]
     os: [win32]
+
+  '@hono/node-server@1.19.7':
+    resolution: {integrity: sha512-vUcD0uauS7EU2caukW8z5lJKtoGMokxNbJtBiwHgpqxEXokaHCBkQUmCHhjFB1VUTWdqj25QoMkMKzgjq+uhrw==}
+    engines: {node: '>=18.14.1'}
+    peerDependencies:
+      hono: ^4
 
   '@jridgewell/gen-mapping@0.3.13':
     resolution: {integrity: sha512-2kkt/7niJ6MgEPxF0bYdQ6etZaA+fQvDcLKckhy1yIQOzaoKjBBjSj63/aLVjYE3qhRt5dvM+uUyfCg6UKCBbA==}
@@ -1723,6 +1732,10 @@ snapshots:
 
   '@esbuild/win32-x64@0.27.1':
     optional: true
+
+  '@hono/node-server@1.19.7(hono@4.11.1)':
+    dependencies:
+      hono: 4.11.1
 
   '@jridgewell/gen-mapping@0.3.13':
     dependencies:

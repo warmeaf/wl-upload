@@ -13,7 +13,9 @@
       "WebSearch",
       "WebFetch(domain:github.com)",
       "Bash(claude mcp add:*)",
-      "Bash(claude:*)"
+      "Bash(claude:*)",
+      "Bash(pnpm list:*)",
+      "Bash(pnpm add:*)"
     ]
   }
 }

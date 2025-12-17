@@ -1,0 +1,75 @@
+{
+  "src": {
+    "type": "directory",
+    "children": {
+      "index.ts": {
+        "type": "file",
+        "readability": 95
+      },
+      "core": {
+        "type": "directory",
+        "children": {
+          "ChunkProcessor.ts": {
+            "type": "file",
+            "readability": 92
+          },
+          "FileUploader.ts": {
+            "type": "file",
+            "readability": 90
+          },
+          "UploadQueue.ts": {
+            "type": "file",
+            "readability": 91
+          },
+          "WorkerManager.ts": {
+            "type": "file",
+            "readability": 93
+          }
+        }
+      },
+      "types": {
+        "type": "directory",
+        "children": {
+          "config.ts": {
+            "type": "file",
+            "readability": 95
+          },
+          "events.ts": {
+            "type": "file",
+            "readability": 94
+          },
+          "index.ts": {
+            "type": "file",
+            "readability": 98
+          },
+          "upload.ts": {
+            "type": "file",
+            "readability": 94
+          }
+        }
+      },
+      "utils": {
+        "type": "directory",
+        "children": {
+          "file.ts": {
+            "type": "file",
+            "readability": 93
+          },
+          "hash.ts": {
+            "type": "file",
+            "readability": 92
+          }
+        }
+      },
+      "workers": {
+        "type": "directory",
+        "children": {
+          "hashWorker.ts": {
+            "type": "file",
+            "readability": 90
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,77 @@
+{
+  "src": {
+    "type": "directory",
+    "children": {
+      "index.ts": {
+        "type": "file",
+        "readability": 95
+      },
+      "controllers": {
+        "type": "directory",
+        "children": {
+          "fileController.ts": {
+            "type": "file",
+            "readability": 92
+          }
+        }
+      },
+      "db": {
+        "type": "directory",
+        "children": {
+          "mongodb.ts": {
+            "type": "file",
+            "readability": 96
+          }
+        }
+      },
+      "models": {
+        "type": "directory",
+        "children": {
+          "File.ts": {
+            "type": "file",
+            "readability": 97
+          },
+          "FileChunk.ts": {
+            "type": "file",
+            "readability": 96
+          },
+          "index.ts": {
+            "type": "file",
+            "readability": 98
+          }
+        }
+      },
+      "routes": {
+        "type": "directory",
+        "children": {
+          "file.ts": {
+            "type": "file",
+            "readability": 95
+          }
+        }
+      },
+      "services": {
+        "type": "directory",
+        "children": {
+          "chunkService.ts": {
+            "type": "file",
+            "readability": 94
+          },
+          "fileService.ts": {
+            "type": "file",
+            "readability": 95
+          }
+        }
+      },
+      "utils": {
+        "type": "directory",
+        "children": {
+          "token.ts": {
+            "type": "file",
+            "readability": 98
+          }
+        }
+      }
+    }
+  }
+}

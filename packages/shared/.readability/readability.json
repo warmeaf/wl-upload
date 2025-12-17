@@ -1,0 +1,37 @@
+{
+  "src": {
+    "type": "directory",
+    "children": {
+      "index.ts": {
+        "type": "file",
+        "readability": 95
+      },
+      "constants": {
+        "type": "directory",
+        "children": {
+          "index.ts": {
+            "type": "file",
+            "readability": 98
+          }
+        }
+      },
+      "types": {
+        "type": "directory",
+        "children": {
+          "api.ts": {
+            "type": "file",
+            "readability": 97
+          },
+          "common.ts": {
+            "type": "file",
+            "readability": 97
+          },
+          "index.ts": {
+            "type": "file",
+            "readability": 95
+          }
+        }
+      }
+    }
+  }
+}

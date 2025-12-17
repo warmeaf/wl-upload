@@ -8,7 +8,7 @@
   "files": {
     "ignoreUnknown": false,
     "maxSize": 1048576,
-    "includes": ["**", "!**/.claude/**/*"]
+    "includes": ["**", "!**/.claude/**/*", "!**/.readability/**/*"]
   },
   "formatter": {
     "enabled": true,

@@ -29,6 +29,7 @@ export class FileUploader {
   private chunkHashes: Map<number, string> = new Map();
   private resolvePromise: ((url: string) => void) | null = null;
   private rejectPromise: ((error: Error) => void) | null = null;
+  private originalFileName: string | null = null;
 
   constructor(options: FileUploaderOptions) {
     this.options = options;
@@ -52,6 +53,16 @@ export class FileUploader {
    * 设置事件处理
    */
   private setupEventHandlers(): void {
+    // 监听文件Hash计算完成事件
+    this.emitter.on("fileHashed", (event) => {
+      this.fileHash = event.fileHash;
+    });
+
+    // 监听分片Hash计算完成事件，保存Hash映射
+    this.emitter.on("chunkHashed", (event) => {
+      this.chunkHashes.set(event.chunkIndex, event.hash);
+    });
+
     // 监听队列完成事件，触发文件合并
     this.emitter.on("queueDrained", () => {
       void this.handleQueueDrained();
@@ -88,11 +99,14 @@ export class FileUploader {
       throw new Error("Invalid file");
     }
 
-    // 重置状态
-    this.resetState();
+    // 保存原始文件名
+    this.originalFileName = file.name;
 
     // 更新状态
     this.setStatus("uploading");
+
+    // 重置状态（保留文件名）
+    this.resetState(false);
 
     try {
       // 创建上传会话
@@ -198,7 +212,7 @@ export class FileUploader {
     const response = await mergeFile(this.options.config.baseUrl, {
       token: this.token,
       fileHash: finalFileHash,
-      fileName: this.chunks[0] ? "chunk" : "unknown",
+      fileName: this.originalFileName || "unknown",
       chunksLength: this.chunks.length,
       chunks,
     });
@@ -246,7 +260,10 @@ export class FileUploader {
   /**
    * 重置状态
    */
-  private resetState(): void {
+  private resetState(resetFileName: boolean = true): void {
+    if (resetFileName) {
+      this.originalFileName = null;
+    }
     this.token = null;
     this.fileHash = null;
     this.isMerged = false;

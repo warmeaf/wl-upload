@@ -72,6 +72,11 @@ export class FileUploader {
     this.emitter.on("queueAborted", (event) => {
       this.handleQueueAborted(event);
     });
+
+    // 监听分片上传完成事件，更新进度
+    this.emitter.on("chunkUploaded", () => {
+      this.updateProgress();
+    });
   }
 
   /**

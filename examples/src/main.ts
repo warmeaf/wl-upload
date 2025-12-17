@@ -12,7 +12,7 @@ const API_BASE_URL = "/api";
 const fileUploader = new FileUploader({
   config: {
     baseUrl: API_BASE_URL,
-    chunkSize: 1024 * 1024, // 1MB chunks
+    chunkSize: 1024 * 1024 * 5, // 5MB chunks
     concurrency: 3,
     enableMultiThreading: true,
   },

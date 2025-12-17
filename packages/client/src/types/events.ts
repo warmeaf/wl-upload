@@ -41,6 +41,11 @@ export interface QueueAbortedEvent {
 }
 
 /**
+ * 分片上传完成事件
+ */
+export type ChunkUploadedEvent = Record<string, never>;
+
+/**
  * 所有上传事件类型的联合类型
  */
 export type UploadEvents =
@@ -48,7 +53,8 @@ export type UploadEvents =
   | AllChunksHashedEvent
   | FileHashedEvent
   | QueueDrainedEvent
-  | QueueAbortedEvent;
+  | QueueAbortedEvent
+  | ChunkUploadedEvent;
 
 /**
  * 事件映射类型，用于 mitt Emitter
@@ -59,4 +65,5 @@ export type EventMap = {
   fileHashed: FileHashedEvent;
   queueAborted: QueueAbortedEvent;
   queueDrained: QueueDrainedEvent;
+  chunkUploaded: ChunkUploadedEvent;
 };

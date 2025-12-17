@@ -256,6 +256,8 @@ export class UploadQueue {
     for (const task of this.tasks.values()) {
       if (task.state !== "completed") {
         task.state = "completed";
+        // 为每个新完成的任务触发进度更新事件
+        this.emitter.emit("chunkUploaded", {} as EventMap["chunkUploaded"]);
       }
     }
   }
@@ -334,6 +336,8 @@ export class UploadQueue {
         // 分片已存在，标记为完成
         task.state = "completed";
         this.inFlightCount--;
+        // 触发分片上传完成事件，用于更新进度
+        this.emitter.emit("chunkUploaded", {} as EventMap["chunkUploaded"]);
         this.processQueue();
         this.checkCompletion();
         return;
@@ -345,6 +349,8 @@ export class UploadQueue {
       // 上传成功
       task.state = "completed";
       this.inFlightCount--;
+      // 触发分片上传完成事件，用于更新进度
+      this.emitter.emit("chunkUploaded", {} as EventMap["chunkUploaded"]);
       this.processQueue();
       this.checkCompletion();
     } catch (error) {

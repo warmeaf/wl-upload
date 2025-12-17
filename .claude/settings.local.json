@@ -15,7 +15,16 @@
       "Bash(claude mcp add:*)",
       "Bash(claude:*)",
       "Bash(pnpm list:*)",
-      "Bash(pnpm add:*)"
+      "Bash(pnpm add:*)",
+      "Bash(pnpm install:*)",
+      "Bash(cat:*)",
+      "Bash(pnpm run typecheck:*)",
+      "Bash(tsc:*)",
+      "Bash(npx tsc:*)",
+      "Bash(ls:*)",
+      "Bash(pnpm build:*)",
+      "Bash(timeout:*)",
+      "Bash(pnpm dev:*)"
     ]
   }
 }

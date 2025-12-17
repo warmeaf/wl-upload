@@ -15,7 +15,7 @@
     "dist"
   ],
   "scripts": {
-    "dev": "vite build --watch",
+    "dev": "tsx watch src/index.ts",
     "build": "tsc && vite build",
     "typecheck": "tsc --noEmit",
     "test": "vitest",
@@ -29,6 +29,7 @@
   },
   "devDependencies": {
     "@types/node": "^25.0.2",
+    "tsx": "^4.19.2",
     "typescript": "^5.9.3",
     "vite": "^7.3.0",
     "vitest": "^4.0.15"

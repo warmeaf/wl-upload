@@ -221,7 +221,10 @@ export class FileUploader {
     this.setStatus("completed");
 
     // 返回文件 URL
-    this.resolvePromise(response.url);
+    if (this.resolvePromise) {
+      this.resolvePromise(response.url);
+      this.resolvePromise = null; // Clear after resolve
+    }
 
     // 更新进度
     this.updateProgress();

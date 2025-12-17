@@ -12,16 +12,14 @@ import type {
   QueueAbortedEvent,
 } from "../types/events";
 import { createFileHasher } from "../utils/hash";
+import HashWorker from "../workers/hashWorker.ts?worker";
 
 /**
  * Worker 工厂函数
  * 可以被测试环境覆盖
  */
 let createWorker: () => Worker = () => {
-  // 在生产环境中，使用 Vite 的 worker 导入
-  // 注意：这需要在构建时由 Vite 处理
-  const workerUrl = new URL("../workers/hashWorker.ts", import.meta.url);
-  return new Worker(workerUrl, { type: "module" });
+  return new HashWorker();
 };
 
 /**
@@ -129,9 +127,8 @@ export class WorkerManager {
    * @param chunks - 分片数组
    */
   processChunks(chunks: ArrayBuffer[]): void {
-    if (this.isAborted) {
-      return;
-    }
+    // Reset abort flag when starting new processing
+    this.isAborted = false;
 
     this.chunks = chunks;
     this.processedChunkCount = 0;

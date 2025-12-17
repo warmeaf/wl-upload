@@ -175,6 +175,7 @@ export class UploadQueue {
   private isAborted = false;
   private fileHash: string | null = null;
   private fileInstantUploadChecked = false;
+  private fileExists = false;
 
   constructor({ config, emitter, token }: UploadQueueConfig) {
     this.config = {
@@ -225,6 +226,7 @@ export class UploadQueue {
     }
 
     this.fileHash = event.fileHash;
+    // 先标记为已检查，防止重复检查
     this.fileInstantUploadChecked = true;
 
     try {
@@ -237,9 +239,11 @@ export class UploadQueue {
 
       if (response.exists) {
         // 文件已存在，标记所有任务为完成
+        this.fileExists = true;
         this.markAllTasksComplete();
         this.checkCompletion();
       }
+      // 如果文件不存在，fileExists 保持为 false，继续处理分片上传
     } catch (error) {
       this.handleError(error instanceof Error ? error : new Error(String(error)));
     }
@@ -285,7 +289,7 @@ export class UploadQueue {
 
     // 如果文件已存在且已检查，不再处理新任务
     // (文件存在时，所有任务已被标记为完成)
-    if (this.fileHash && this.fileInstantUploadChecked) {
+    if (this.fileHash && this.fileInstantUploadChecked && this.fileExists) {
       return;
     }
 

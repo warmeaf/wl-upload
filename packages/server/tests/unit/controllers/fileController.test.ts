@@ -76,6 +76,7 @@ describe("FileController", () => {
         expect.objectContaining({
           code: 400,
         }),
+        400,
       );
     });
 
@@ -106,6 +107,7 @@ describe("FileController", () => {
         expect.objectContaining({
           code: 500,
         }),
+        500,
       );
     });
   });
@@ -190,10 +192,13 @@ describe("FileController", () => {
 
       await patchHash(ctx);
 
-      expect(ctx.json).toHaveBeenCalledWith({
-        code: ErrorCodes.INVALID_TOKEN,
-        message: "Invalid token",
-      });
+      expect(ctx.json).toHaveBeenCalledWith(
+        {
+          code: ErrorCodes.INVALID_TOKEN,
+          message: "Invalid token",
+        },
+        401,
+      );
     });
   });
 
@@ -249,10 +254,13 @@ describe("FileController", () => {
 
       await uploadChunk(ctx);
 
-      expect(ctx.json).toHaveBeenCalledWith({
-        code: ErrorCodes.INVALID_TOKEN,
-        message: "Invalid token",
-      });
+      expect(ctx.json).toHaveBeenCalledWith(
+        {
+          code: ErrorCodes.INVALID_TOKEN,
+          message: "Invalid token",
+        },
+        401,
+      );
     });
 
     it("should return error for missing form fields", async () => {
@@ -275,6 +283,7 @@ describe("FileController", () => {
         expect.objectContaining({
           code: 400,
         }),
+        400,
       );
     });
   });
@@ -348,10 +357,13 @@ describe("FileController", () => {
 
       await mergeFile(ctx);
 
-      expect(ctx.json).toHaveBeenCalledWith({
-        code: ErrorCodes.INVALID_TOKEN,
-        message: "Invalid token",
-      });
+      expect(ctx.json).toHaveBeenCalledWith(
+        {
+          code: ErrorCodes.INVALID_TOKEN,
+          message: "Invalid token",
+        },
+        401,
+      );
     });
 
     it("should handle merge errors", async () => {
@@ -386,6 +398,7 @@ describe("FileController", () => {
         expect.objectContaining({
           code: ErrorCodes.MERGE_FAILED,
         }),
+        500,
       );
     });
   });

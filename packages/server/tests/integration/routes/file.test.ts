@@ -255,8 +255,8 @@ describe("File Routes Integration", () => {
           token: "invalid-token",
           fileHash: "file-hash-123",
           fileName: "test.zip",
-          chunksLength: 0,
-          chunks: [],
+          chunksLength: 3,
+          chunks: ["chunk1", "chunk2", "chunk3"],
         }),
       });
 

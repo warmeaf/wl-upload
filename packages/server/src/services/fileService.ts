@@ -26,10 +26,8 @@ export interface CreateFileSessionInput {
  * @throws 如果创建失败
  */
 export async function createFileSession(input: CreateFileSessionInput): Promise<{ token: string }> {
-  // 生成唯一 token
   const token = generateToken();
 
-  // 创建文件文档
   const doc = createFileDocument({
     token,
     fileName: input.fileName,
@@ -41,14 +39,11 @@ export async function createFileSession(input: CreateFileSessionInput): Promise<
   const collection = getFilesCollection() as unknown as import("mongodb").Collection<FileDocument>;
 
   try {
-    // 插入文档
     await collection.insertOne(doc);
 
     return { token };
   } catch (error: unknown) {
-    // 处理唯一索引冲突（理论上不应该发生，因为 token 是随机生成的）
     if (error && typeof error === "object" && "code" in error && error.code === 11000) {
-      // 如果 token 冲突，重试一次
       const retryToken = generateToken();
       const retryDoc = createFileDocument({
         token: retryToken,
@@ -103,7 +98,6 @@ export async function getFileByToken(token: string): Promise<FileDocument | null
     return null;
   }
 
-  // 验证文档结构
   validateFileDocument(doc);
 
   return doc;
@@ -125,13 +119,10 @@ export function generateFileUrl(fileName: string, fileHash: string): string {
     throw new Error("Invalid fileHash: must be a non-empty string");
   }
 
-  // 提取文件名（去除路径）
   const baseName = fileName.split(/[/\\]/).pop() || fileName;
 
-  // 分离文件名和扩展名
   const lastDotIndex = baseName.lastIndexOf(".");
   if (lastDotIndex === -1) {
-    // 没有扩展名
     return `${baseName}_${fileHash}`;
   }
 
@@ -178,12 +169,10 @@ export async function mergeFile(
     throw new Error("Invalid chunks: must be an array");
   }
 
-  // 验证分片数量
   if (chunks.length !== chunksLength) {
     throw new Error("Chunk count mismatch");
   }
 
-  // 验证分片顺序和完整性
   for (let i = 0; i < chunks.length; i++) {
     if (chunks[i].index !== i) {
       throw new Error("Chunks must be in order");
@@ -195,31 +184,25 @@ export async function mergeFile(
 
   const collection = getFilesCollection() as unknown as import("mongodb").Collection<FileDocument>;
 
-  // 查找文件会话
   const doc = await collection.findOne({ token });
   if (!doc) {
     throw new Error("File session not found");
   }
 
-  // 验证分片数量是否匹配
   if (doc.chunksLength !== chunksLength) {
     throw new Error("Chunk count mismatch");
   }
 
-  // 生成文件 URL
   const url = generateFileUrl(fileName, fileHash);
 
-  // 更新文件文档
   const updatedDoc = updateFileDocument(doc, {
     fileHash,
     chunks,
     url,
   });
 
-  // 验证更新后的文档
   validateFileDocument(updatedDoc);
 
-  // 更新数据库
   await collection.updateOne(
     { token },
     {

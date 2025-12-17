@@ -36,7 +36,6 @@ export interface FileChunkCreateInput {
 export async function createFileChunkIndexes(
   collection: Collection<FileChunkDocument>,
 ): Promise<void> {
-  // 创建 hash 唯一索引
   await collection.createIndex({ hash: 1 }, { unique: true });
 }
 

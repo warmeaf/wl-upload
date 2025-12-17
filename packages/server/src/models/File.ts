@@ -76,10 +76,8 @@ export interface FileUpdateInput {
  * @param collection - files 集合实例
  */
 export async function createFileIndexes(collection: Collection<FileDocument>): Promise<void> {
-  // 创建 token 唯一索引
   await collection.createIndex({ token: 1 }, { unique: true });
 
-  // 创建 fileHash 索引（用于秒传查询）
   await collection.createIndex({ fileHash: 1 });
 }
 
@@ -117,7 +115,6 @@ export function validateFileDocument(doc: FileDocument): void {
     throw new Error("Invalid chunks field");
   }
 
-  // 验证 chunks 数组中的每个元素
   for (const chunk of doc.chunks) {
     if (typeof chunk.index !== "number" || typeof chunk.hash !== "string" || !chunk.hash) {
       throw new Error("Invalid chunk structure");
@@ -172,14 +169,11 @@ export function updateFileDocument(
 ): FileDocument {
   const updated: FileDocument = { ...doc };
 
-  // 更新 fileHash（如果提供）
   if (input.fileHash !== undefined) {
     updated.fileHash = input.fileHash;
   }
 
-  // 更新 chunks（如果提供）
   if (input.chunks !== undefined) {
-    // 验证 chunks 数组结构
     if (!Array.isArray(input.chunks)) {
       throw new Error("Invalid chunks field: must be an array");
     }
@@ -191,7 +185,6 @@ export function updateFileDocument(
     updated.chunks = input.chunks;
   }
 
-  // 更新 url（如果提供）
   if (input.url !== undefined) {
     if (typeof input.url !== "string") {
       throw new Error("Invalid url field: must be a string");
@@ -199,7 +192,6 @@ export function updateFileDocument(
     updated.url = input.url;
   }
 
-  // 自动更新 updatedAt
   updated.updatedAt = now;
 
   return updated;

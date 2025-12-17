@@ -26,30 +26,22 @@ export async function storeChunk(hash: string, chunkData: Buffer): Promise<boole
   const collection =
     getFileChunksCollection() as unknown as import("mongodb").Collection<FileChunkDocument>;
 
-  // 检查分片是否已存在
   const existing = await collection.findOne({ hash });
   if (existing) {
-    // 分片已存在，跳过存储（去重）
     return true;
   }
 
   try {
-    // 创建分片文档
     const doc = createFileChunkDocument({ hash, chunk: chunkData });
 
-    // 存储分片
     await collection.insertOne(doc);
 
     return true;
   } catch (error: unknown) {
-    // 处理唯一索引冲突（E11000 错误码）
-    // 这可能在并发情况下发生：两个请求同时检查都不存在，然后都尝试插入
     if (error && typeof error === "object" && "code" in error && error.code === 11000) {
-      // 分片已存在（被其他请求插入），视为成功
       return true;
     }
 
-    // 其他错误重新抛出
     throw error;
   }
 }
@@ -93,7 +85,6 @@ export async function getChunk(hash: string): Promise<FileChunkDocument | null> 
     return null;
   }
 
-  // 验证文档结构
   validateFileChunkDocument(doc);
 
   return doc;

@@ -33,26 +33,18 @@ const DEFAULT_DB_NAME = "wl-upload";
  * @throws 如果连接失败
  */
 export async function connect(uri?: string): Promise<void> {
-  // 如果已经连接，直接返回
   if (client && db) {
     return;
   }
 
-  // 确定连接 URI
   const connectionUri = uri || process.env.MONGODB_URI || DEFAULT_MONGODB_URI;
 
-  // 创建客户端
-  client = new MongoClient(connectionUri, {
-    // 连接选项可以在这里配置
-  });
+  client = new MongoClient(connectionUri, {});
 
-  // 连接到数据库
   await client.connect();
 
-  // 获取数据库名称
   const dbName = process.env.MONGODB_DB_NAME || DEFAULT_DB_NAME;
 
-  // 获取数据库实例
   db = client.db(dbName);
 }
 
@@ -94,8 +86,6 @@ export function getDatabase(dbName?: string): Db {
 
   const databaseName = dbName || process.env.MONGODB_DB_NAME || DEFAULT_DB_NAME;
 
-  // 如果请求的数据库名称与当前数据库名称不同，返回新的数据库实例
-  // 注意：这不会更新内部存储的 db 变量
   if (databaseName !== db.databaseName) {
     return client.db(databaseName);
   }
@@ -137,9 +127,7 @@ export async function initializeIndexes(): Promise<void> {
   const fileChunksCollection =
     getFileChunksCollection() as unknown as Collection<FileChunkDocument>;
 
-  // 创建 files 集合的索引
   await createFileIndexes(filesCollection);
 
-  // 创建 fileChunks 集合的索引
   await createFileChunkIndexes(fileChunksCollection);
 }

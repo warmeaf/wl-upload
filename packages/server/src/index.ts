@@ -14,10 +14,8 @@ import fileRoutes from "./routes/file";
 export function createApp(): Hono {
   const app = new Hono();
 
-  // 注册文件上传相关路由
   app.route("/file", fileRoutes);
 
-  // 健康检查端点
   app.get("/health", (c) => {
     return c.json({
       status: "ok",
@@ -41,18 +39,14 @@ export async function startServer(
   mongoUri?: string,
   dbName?: string,
 ): Promise<ReturnType<typeof serve>> {
-  // 连接到 MongoDB
   await connect(mongoUri);
 
-  // 如果指定了数据库名称，初始化索引
   if (dbName) {
     await initializeIndexes();
   }
 
-  // 创建应用
   const app = createApp();
 
-  // 启动服务器
   const server = serve({
     fetch: app.fetch,
     port,
@@ -64,7 +58,6 @@ export async function startServer(
   return server;
 }
 
-// 如果直接运行此文件，启动服务器
 if (import.meta.main) {
   const port = Number(process.env.PORT) || 3001;
   startServer(port).catch((error) => {
@@ -73,5 +66,4 @@ if (import.meta.main) {
   });
 }
 
-// 导出默认应用
 export default createApp();

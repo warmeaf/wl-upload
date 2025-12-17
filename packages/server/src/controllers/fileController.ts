@@ -26,7 +26,6 @@ export async function createFile(ctx: Context): Promise<Response> {
   try {
     const body = await ctx.req.json<CreateFileRequest>();
 
-    // 验证请求体
     if (
       !body.fileName ||
       !body.fileType ||
@@ -74,7 +73,6 @@ export async function patchHash(ctx: Context): Promise<Response> {
   try {
     const body = await ctx.req.json<PatchHashRequest>();
 
-    // 验证请求体
     if (!body.token || !body.hash || typeof body.isChunk !== "boolean") {
       return ctx.json<ApiErrorResponse>(
         {
@@ -85,7 +83,6 @@ export async function patchHash(ctx: Context): Promise<Response> {
       );
     }
 
-    // 验证 token（对于文件检查，token 验证是可选的，但为了统一性，我们仍然验证）
     const fileDoc = await FileService.getFileByToken(body.token);
     if (!fileDoc) {
       return ctx.json<ApiErrorResponse>(
@@ -100,10 +97,8 @@ export async function patchHash(ctx: Context): Promise<Response> {
     let exists: boolean;
 
     if (body.isChunk) {
-      // 检查分片是否存在
       exists = await ChunkService.chunkExists(body.hash);
     } else {
-      // 检查文件是否存在（根据 fileHash）
       exists = await FileService.fileExistsByHash(body.hash);
     }
 
@@ -134,7 +129,6 @@ export async function uploadChunk(ctx: Context): Promise<Response> {
     const chunk = formData.get("chunk");
     const hash = formData.get("hash");
 
-    // 验证表单数据
     if (!token || !chunk || !hash) {
       return ctx.json<ApiErrorResponse>(
         {
@@ -155,7 +149,6 @@ export async function uploadChunk(ctx: Context): Promise<Response> {
       );
     }
 
-    // 验证 token
     const fileDoc = await FileService.getFileByToken(token);
     if (!fileDoc) {
       return ctx.json<ApiErrorResponse>(
@@ -167,15 +160,11 @@ export async function uploadChunk(ctx: Context): Promise<Response> {
       );
     }
 
-    // 将 chunk 转换为 Buffer
     let chunkBuffer: Buffer;
-    // File 继承自 Blob，所以先检查 File，然后检查是否有 arrayBuffer 方法
     if (chunk instanceof File) {
       const arrayBuffer = await chunk.arrayBuffer();
       chunkBuffer = Buffer.from(arrayBuffer);
     } else if (chunk && typeof chunk === "object" && "arrayBuffer" in chunk) {
-      // 处理 Blob 类型（在 Node.js 18+ 中可用）
-      // FormData.get() 可能返回 File | Blob | string | null
       const blobLike = chunk as { arrayBuffer(): Promise<ArrayBuffer> };
       const arrayBuffer = await blobLike.arrayBuffer();
       chunkBuffer = Buffer.from(arrayBuffer);
@@ -189,7 +178,6 @@ export async function uploadChunk(ctx: Context): Promise<Response> {
       );
     }
 
-    // 存储分片
     await ChunkService.storeChunk(hash, chunkBuffer);
 
     return ctx.json<UploadChunkResponse>({
@@ -215,7 +203,6 @@ export async function mergeFile(ctx: Context): Promise<Response> {
   try {
     const body = await ctx.req.json<MergeFileRequest>();
 
-    // 验证请求体
     if (
       !body.token ||
       !body.fileHash ||
@@ -233,7 +220,6 @@ export async function mergeFile(ctx: Context): Promise<Response> {
       );
     }
 
-    // 验证 token
     const fileDoc = await FileService.getFileByToken(body.token);
     if (!fileDoc) {
       return ctx.json<ApiErrorResponse>(
@@ -245,7 +231,6 @@ export async function mergeFile(ctx: Context): Promise<Response> {
       );
     }
 
-    // 合并文件
     const result = await FileService.mergeFile(
       body.token,
       body.fileHash,

@@ -31,21 +31,17 @@ export function generateToken(): string {
  * @returns 如果 Token 格式有效返回 true，否则返回 false
  */
 export function validateToken(token: string): boolean {
-  // 检查是否为 null 或 undefined
   if (token == null) {
     return false;
   }
 
-  // 检查类型
   if (typeof token !== "string") {
     return false;
   }
 
-  // 检查长度
   if (token.length !== TOKEN_STRING_LENGTH) {
     return false;
   }
 
-  // 检查是否为有效的十六进制字符串（小写）
   return /^[0-9a-f]{64}$/.test(token);
 }

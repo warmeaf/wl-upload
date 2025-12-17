@@ -3,7 +3,7 @@
   "compilerOptions": {
     "outDir": "./dist",
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "types": ["vite/client"]
+    "types": ["vite/client", "vitest/globals"]
   },
   "include": ["src/**/*", "vite.config.ts", "tests/**/*"],
   "exclude": ["node_modules", "dist"],

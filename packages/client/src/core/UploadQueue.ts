@@ -226,7 +226,6 @@ export class UploadQueue {
     }
 
     this.fileHash = event.fileHash;
-    // 先标记为已检查，防止重复检查
     this.fileInstantUploadChecked = true;
 
     try {
@@ -238,12 +237,10 @@ export class UploadQueue {
       );
 
       if (response.exists) {
-        // 文件已存在，标记所有任务为完成
         this.fileExists = true;
         this.markAllTasksComplete();
         this.checkCompletion();
       }
-      // 如果文件不存在，fileExists 保持为 false，继续处理分片上传
     } catch (error) {
       this.handleError(error instanceof Error ? error : new Error(String(error)));
     }
@@ -256,7 +253,6 @@ export class UploadQueue {
     for (const task of this.tasks.values()) {
       if (task.state !== "completed") {
         task.state = "completed";
-        // 为每个新完成的任务触发进度更新事件
         this.emitter.emit("chunkUploaded", {} as EventMap["chunkUploaded"]);
       }
     }
@@ -289,13 +285,10 @@ export class UploadQueue {
       return;
     }
 
-    // 如果文件已存在且已检查，不再处理新任务
-    // (文件存在时，所有任务已被标记为完成)
     if (this.fileHash && this.fileInstantUploadChecked && this.fileExists) {
       return;
     }
 
-    // 启动新任务直到达到并发限制
     while (this.inFlightCount < this.config.concurrency) {
       const pendingTask = this.findPendingTask();
       if (!pendingTask) {
@@ -329,27 +322,21 @@ export class UploadQueue {
     }
 
     try {
-      // 检查分片是否存在
       const checkResponse = await checkHashExists(this.config.baseUrl, this.token, task.hash, true);
 
       if (checkResponse.exists) {
-        // 分片已存在，标记为完成
         task.state = "completed";
         this.inFlightCount--;
-        // 触发分片上传完成事件，用于更新进度
         this.emitter.emit("chunkUploaded", {} as EventMap["chunkUploaded"]);
         this.processQueue();
         this.checkCompletion();
         return;
       }
 
-      // 分片不存在，需要上传
       await uploadChunk(this.config.baseUrl, this.token, task.chunkData, task.hash);
 
-      // 上传成功
       task.state = "completed";
       this.inFlightCount--;
-      // 触发分片上传完成事件，用于更新进度
       this.emitter.emit("chunkUploaded", {} as EventMap["chunkUploaded"]);
       this.processQueue();
       this.checkCompletion();
@@ -365,11 +352,6 @@ export class UploadQueue {
     if (this.isAborted) {
       return;
     }
-
-    // 必须满足以下条件：
-    // 1. 所有分片 Hash 已完成
-    // 2. 所有任务都已完成
-    // 3. 没有正在执行的任务
 
     if (!this.allChunksHashed) {
       return;

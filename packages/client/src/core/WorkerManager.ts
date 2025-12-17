@@ -127,7 +127,6 @@ export class WorkerManager {
    * @param chunks - 分片数组
    */
   processChunks(chunks: ArrayBuffer[]): void {
-    // Reset abort flag when starting new processing
     this.isAborted = false;
 
     this.chunks = chunks;
@@ -138,14 +137,12 @@ export class WorkerManager {
       return;
     }
 
-    // 初始化结果缓冲区
     this.resultBuffer = new ResultBuffer(
       chunks.length,
       (event) => {
         if (!this.isAborted) {
           this.config.emitter.emit("chunkHashed", event);
 
-          // 多线程模式下，在主线程中累计计算文件 Hash
           if (this.config.enableMultiThreading) {
             this.fileHasher.append(event.chunkData);
           }
@@ -155,7 +152,6 @@ export class WorkerManager {
         if (!this.isAborted) {
           this.config.emitter.emit("allChunksHashed", {} as AllChunksHashedEvent);
 
-          // 多线程模式下，在主线程中计算文件 Hash
           if (this.config.enableMultiThreading) {
             const fileHash = this.fileHasher.end();
             this.config.emitter.emit("fileHashed", { fileHash } as FileHashedEvent);
@@ -164,10 +160,8 @@ export class WorkerManager {
       },
     );
 
-    // 创建 Worker
     this.createWorkers();
 
-    // 开始处理
     this.distributeTasks();
   }
 
@@ -217,22 +211,17 @@ export class WorkerManager {
         };
 
         if (this.config.enableMultiThreading) {
-          // 多线程模式：使用结果缓冲区保证顺序
           this.resultBuffer?.add(response.chunkIndex, chunkEvent);
         } else {
-          // 单线程模式：直接发出事件
           this.config.emitter.emit("chunkHashed", chunkEvent);
 
-          // 检查是否所有分片都处理完成
           if (this.processedChunkCount >= this.chunks.length) {
             this.config.emitter.emit("allChunksHashed", {} as AllChunksHashedEvent);
 
-            // 单线程模式下，在 Worker 中计算文件 Hash
             this.requestFileHash(worker);
           }
         }
       } else if (response.type === "fileHashed" && response.fileHash) {
-        // 单线程模式下，文件 Hash 由 Worker 计算
         if (!this.config.enableMultiThreading) {
           this.config.emitter.emit("fileHashed", {
             fileHash: response.fileHash,
@@ -262,7 +251,6 @@ export class WorkerManager {
    */
   private distributeTasks(): void {
     if (this.config.enableMultiThreading) {
-      // 多线程模式：轮询分配任务
       let workerIndex = 0;
       for (let i = 0; i < this.chunks.length; i++) {
         const worker = this.workers[workerIndex % this.workers.length];
@@ -275,7 +263,6 @@ export class WorkerManager {
         workerIndex++;
       }
     } else {
-      // 单线程模式：顺序发送任务
       const worker = this.workers[0];
       for (let i = 0; i < this.chunks.length; i++) {
         const message: WorkerMessage = {
@@ -320,12 +307,10 @@ export class WorkerManager {
     for (const worker of this.workers) {
       try {
         worker.terminate();
-      } catch {
-        // Ignore termination errors
-      }
+      } catch {}
     }
     this.workers = [];
     this.resultBuffer = null;
-    this.fileHasher = createFileHasher(); // Reset file hasher
+    this.fileHasher = createFileHasher();
   }
 }

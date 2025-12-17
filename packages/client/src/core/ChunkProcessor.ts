@@ -38,10 +38,8 @@ export class ChunkProcessor {
    * @throws 如果文件无效
    */
   async processFile(file: File): Promise<FileChunk[]> {
-    // 验证文件
     validateFile(file);
 
-    // 分割文件
     const chunks = await splitFileIntoChunks(file, this.config.chunkSize);
 
     return chunks;

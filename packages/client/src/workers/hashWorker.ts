@@ -62,7 +62,6 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
     const message = event.data;
 
     if (message.type === "hashChunk") {
-      // 计算分片 Hash
       const hash = calculateChunkHash(message.chunkData);
 
       const response: ChunkHashedMessage = {
@@ -74,7 +73,6 @@ self.onmessage = (event: MessageEvent<WorkerMessage>) => {
 
       self.postMessage(response);
     } else if (message.type === "hashFile") {
-      // 计算文件 Hash（单线程模式）
       const hasher = createFileHasher();
 
       for (const chunk of message.chunks) {

@@ -35,17 +35,15 @@ export class FileUploader {
     this.options = options;
     this.emitter = mitt<EventMap>();
 
-    // 初始化各个组件
     this.workerManager = new WorkerManager({
       enableMultiThreading: this.options.config.enableMultiThreading ?? true,
       emitter: this.emitter,
     });
 
     this.chunkProcessor = new ChunkProcessor({
-      chunkSize: this.options.config.chunkSize ?? 5 * 1024 * 1024, // 5MB
+      chunkSize: this.options.config.chunkSize ?? 5 * 1024 * 1024,
     });
 
-    // 绑定事件处理
     this.setupEventHandlers();
   }
 
@@ -53,27 +51,22 @@ export class FileUploader {
    * 设置事件处理
    */
   private setupEventHandlers(): void {
-    // 监听文件Hash计算完成事件
     this.emitter.on("fileHashed", (event) => {
       this.fileHash = event.fileHash;
     });
 
-    // 监听分片Hash计算完成事件，保存Hash映射
     this.emitter.on("chunkHashed", (event) => {
       this.chunkHashes.set(event.chunkIndex, event.hash);
     });
 
-    // 监听队列完成事件，触发文件合并
     this.emitter.on("queueDrained", () => {
       void this.handleQueueDrained();
     });
 
-    // 监听队列中止事件
     this.emitter.on("queueAborted", (event) => {
       this.handleQueueAborted(event);
     });
 
-    // 监听分片上传完成事件，更新进度
     this.emitter.on("chunkUploaded", () => {
       this.updateProgress();
     });
@@ -98,26 +91,20 @@ export class FileUploader {
    * 开始上传
    */
   async upload(file: File): Promise<string> {
-    // 验证文件
     const isValid = await this.validateFile(file);
     if (!isValid) {
       throw new Error("Invalid file");
     }
 
-    // 保存原始文件名
     this.originalFileName = file.name;
 
-    // 更新状态
     this.setStatus("uploading");
 
-    // 重置状态（保留文件名）
     this.resetState(false);
 
     try {
-      // 创建上传会话
       await this.createUploadSession(file);
 
-      // 初始化上传队列（需要 token）
       if (!this.token) {
         throw new Error("Failed to get upload token");
       }
@@ -127,19 +114,15 @@ export class FileUploader {
         token: this.token,
       });
 
-      // 处理分片
       const chunks = await this.chunkProcessor.processFile(file);
       this.chunks = chunks;
 
-      // 更新进度信息
       this.updateProgress();
 
-      // 等待上传完成
       return new Promise<string>((resolve, reject) => {
         this.resolvePromise = resolve;
         this.rejectPromise = reject;
 
-        // 开始 Hash 计算
         this.workerManager.processChunks(chunks.map((c) => c.data));
       });
     } catch (error) {
@@ -205,13 +188,11 @@ export class FileUploader {
       throw new Error("Missing token or resolver");
     }
 
-    // 构建分片信息
     const chunks = Array.from(this.chunkHashes.entries()).map(([index, hash]) => ({
       index,
       hash,
     }));
 
-    // 如果没有文件 Hash，使用空字符串
     const finalFileHash = this.fileHash || "";
 
     const response = await mergeFile(this.options.config.baseUrl, {
@@ -225,13 +206,11 @@ export class FileUploader {
     this.isMerged = true;
     this.setStatus("completed");
 
-    // 返回文件 URL
     if (this.resolvePromise) {
       this.resolvePromise(response.url);
-      this.resolvePromise = null; // Clear after resolve
+      this.resolvePromise = null;
     }
 
-    // 更新进度
     this.updateProgress();
   }
 
@@ -243,7 +222,6 @@ export class FileUploader {
       const chunksHashed = this.chunkHashes.size;
       const totalChunks = this.chunks.length;
 
-      // 从 UploadQueue 获取上传进度（如果存在）
       const stats = this.uploadQueue?.getStats();
       const chunksUploaded = stats?.completed || 0;
 

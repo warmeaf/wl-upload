@@ -62,7 +62,6 @@ async function handleUpload() {
     showSuccess(`File uploaded successfully! URL: ${url}`);
     updateFileList();
   } catch (error) {
-    console.error("Upload failed:", error);
     showError(`Upload failed: ${(error as Error).message}`);
   } finally {
     resetButtons();

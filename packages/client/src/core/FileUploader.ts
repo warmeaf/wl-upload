@@ -267,11 +267,13 @@ export class FileUploader {
    * 中止上传
    */
   abort(): void {
+    const rejectPromiseRef = this.rejectPromise;
+
     this.resetState();
     this.setStatus("failed");
 
-    if (this.rejectPromise) {
-      this.rejectPromise(new Error("Upload aborted"));
+    if (rejectPromiseRef) {
+      rejectPromiseRef(new Error("Upload aborted"));
     }
   }
 

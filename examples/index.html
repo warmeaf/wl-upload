@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>System // Data Ingestion</title>
+    <title>File Upload</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -92,7 +92,7 @@
       }
 
       header::before {
-        content: 'SYS.01';
+        content: '';
         position: absolute;
         top: -20px;
         left: 0;
@@ -446,17 +446,7 @@
   <body>
     <div class="container">
       <header>
-        <h1>Ingest <span>Node.04</span></h1>
-        <div
-          style="
-            font-family: var(--f-mono);
-            color: var(--c-text-muted);
-            font-size: 0.8rem;
-            margin-top: 0.5rem;
-          "
-        >
-          // Awaiting input stream...
-        </div>
+        <h1>File Upload</h1>
       </header>
 
       <div class="upload-section">
@@ -467,7 +457,7 @@
         <div class="corner br"></div>
 
         <div class="upload-inner">
-          <label class="upload-label">> SELECT DATA PACKETS</label>
+          <label class="upload-label">Select Files</label>
 
           <div class="file-input-wrapper">
             <input type="file" id="fileInput" multiple />

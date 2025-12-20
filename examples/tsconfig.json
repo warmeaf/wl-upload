@@ -16,7 +16,7 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": ".",
     "paths": {
-      "wl-upload": ["../src/index.ts"]
+      "@wl-upload/client": ["../packages/client/src/index.ts"]
     }
   },
   "include": ["src/**/*", "../src/**/*"],

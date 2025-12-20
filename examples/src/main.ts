@@ -1,8 +1,4 @@
-import {
-  FileUploader,
-  type ProgressInfo,
-  type UploadStatus,
-} from "../../packages/client/src/index";
+import { FileUploader, type ProgressInfo, type UploadStatus } from "@wl-upload/client";
 
 // API endpoint - use relative path for Vite proxy in development
 // In production, set this to your actual API server URL

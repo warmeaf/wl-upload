@@ -17,7 +17,7 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      "wl-upload": resolve(__dirname, "../src/index.ts"),
+      "@wl-upload/client": resolve(__dirname, "../packages/client/src/index.ts"),
     },
   },
   build: {
